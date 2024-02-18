@@ -52,15 +52,21 @@ import matplotlib.pyplot as plt
 
 x = np.linspace(1, 20)[:, None]
 y = psi(params['nn'], x)
-
-y_k = fft3(y) #3-Dimensional FFT
-y_mod = np.abs(y_k)
+summation = [complex(0,0) for i in range(1000)]
+y_k = [complex(0,0) for i in range(1000)]
+for i in range(1000):
+   for k in range(1000):
+       summation[i]+= 4*np.pi*(k**2)*np.exp(-2*np.pi*1j*i*k/nx)*y[k]  #3-Dimensional FFT
+       y_k[i]=summation[i]
+       
+y_mod = np.absolute(y_k)
 ymods = y_mod**2
 ymodsum = np.sum(ymods)
 modfrac = ymods/ymodsum
 modftud = modfrac/np.max(modfrac)
 Df = -modftud*np.log(modftud)
 CE = np.sum(Df)
+print(modftud)
 
 plt.plot(x, y, label='NN')
 plt.legend()

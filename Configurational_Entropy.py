@@ -2,7 +2,7 @@ import autograd.numpy as np
 from autograd import grad, elementwise_grad
 import autograd.numpy.random as npr
 from autograd.misc.optimizers import adam
-from scipy.fft import fft3
+from scipy.fft import fft
 
 def init_random_params(scale, layer_sizes, rs=npr.RandomState(42)):
     """Build a list of (weights, biases) tuples, one for each layer."""
@@ -54,9 +54,16 @@ x = np.linspace(1, 20)[:, None]
 y = psi(params['nn'], x)
 summation = [complex(0,0) for i in range(1000)]
 y_k = [complex(0,0) for i in range(1000)]
+fpi=93
+e=1
+a=0.4
+z = psip(params['nn'], x)
+ed=[0 for element in range(500)]
+for i in range(500):
+    ed[i]=fpi**2*fpi**2*e**2*0.5*(2*np.sin(y[i])**2/(x[i]**2+a)+z[i]**2+0.5*np.sin(y[i])**2/(x[i]**2+a)*(np.sin(y[i])**2/(x[i]**2+a)+2*z[i]**2)) #Energy_density
 for i in range(1000):
    for k in range(1000):
-       summation[i]+= 4*np.pi*(k**2)*np.exp(-2*np.pi*1j*i*k/nx)*y[k]  #3-Dimensional FFT
+       summation[i]+= 4*np.pi*(k**2)*np.exp(-2*np.pi*1j*i*k/nx)*ed[k]  #3-Dimensional FFT
        y_k[i]=summation[i]
        
 y_mod = np.absolute(y_k)
